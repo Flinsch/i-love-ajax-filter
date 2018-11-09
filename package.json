@@ -1,0 +1,44 @@
+{
+  "name": "i-love-ajax-filter",
+  "version": "0.9.0",
+  "description": "An extension for the i-love-ajax base module providing filter functionality for tables and lists (as well as sorting, pagination, etc.).",
+  "keywords": [
+    "filter",
+    "filtering",
+    "sort",
+    "sorting",
+    "paginate",
+    "pagination",
+    "i-love-ajax-filter",
+    "i-love-ajax",
+    "ilx",
+    "AJAX",
+    "XHR",
+    "helper",
+    "jQuery"
+  ],
+  "author": "Flinsch <flinsch@gmx.net>",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/Flinsch/i-love-ajax-filter.git",
+    "type": "git"
+  },
+  "homepage": "https://github.com/Flinsch/i-love-ajax-filter",
+  "bugs": "https://github.com/Flinsch/i-love-ajax-filter/issues",
+  "files": [
+    "src/**/*",
+    "dist/**/*"
+  ],
+  "main": "dist/ilx-filter.js",
+  "dependencies": {
+    "i-love-ajax": "^0.9.6"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.3",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-qunit": "^3.0.1",
+    "grunt-contrib-uglify": "^3.4.0",
+    "grunt-contrib-watch": "^1.1.0"
+  }
+}
