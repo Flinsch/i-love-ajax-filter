@@ -121,7 +121,12 @@
     };
 
     var _fetchItems = function($container, options) {
+        $container.trigger($.Event('ilx-filter.fetch-items.before', {}));
+
         var url = $container.attr('data-ilx-filter-items-url');
+        if (url.length === 0) {
+            return;
+        }
         var method = $container.attr('data-ilx-filter-fetch-method') || 'post';
         var data = $container.find(options.selectors.inputData).serialize();
 
@@ -151,13 +156,20 @@
                 var $items = ilx.filterContent($response);
                 $container.find(options.selectors.items).remove();
                 $container.find(options.selectors.itemsContainer).append($items);
+
+                $container.trigger($.Event('ilx-filter.fetch-items.after', {}));
             }
         };
         $.ajax(settings);
     };
 
     var _fetchStats = function($container, options) {
+        $container.trigger($.Event('ilx-filter.fetch-stats.before', {}));
+
         var url = $container.attr('data-ilx-filter-stats-url');
+        if (url.length === 0) {
+            return;
+        }
         var method = $container.attr('data-ilx-filter-fetch-method') || 'post';
         var data = $container.find(options.selectors.inputData).serialize();
 
@@ -169,6 +181,8 @@
                 var json = JSON.parse(jqXHR.responseText);
                 _updateNumberOfItems($container, options, json[options.json.itemsCount], json[options.json.totalCount]);
                 _updatePagination($container, options, json[options.json.itemsCount]);
+
+                $container.trigger($.Event('ilx-filter.fetch-stats.after', {}));
             }
         };
         $.ajax(settings);
