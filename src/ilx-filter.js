@@ -137,7 +137,7 @@
         $container.trigger($.Event('ilx-filter.fetch-items.before', {}));
 
         var url = $container.attr('data-ilx-filter-items-url');
-        if (url.length === 0) {
+        if (typeof url === 'undefined' || url.length === 0) {
             return;
         }
         var method = $container.attr('data-ilx-filter-fetch-method') || 'post';
@@ -180,7 +180,7 @@
         $container.trigger($.Event('ilx-filter.fetch-stats.before', {}));
 
         var url = $container.attr('data-ilx-filter-stats-url');
-        if (url.length === 0) {
+        if (typeof url === 'undefined' || url.length === 0) {
             return;
         }
         var method = $container.attr('data-ilx-filter-fetch-method') || 'post';
