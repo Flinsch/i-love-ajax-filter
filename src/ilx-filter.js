@@ -58,6 +58,8 @@
 
         this.setOptions(options);
 
+        $container.data('ilx-filter', this);
+
         _init(this.$container, this.options);
     };
 
