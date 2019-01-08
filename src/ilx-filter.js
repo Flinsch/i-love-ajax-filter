@@ -77,6 +77,19 @@
         return this.options[name];
     };
 
+    ilx.Filter.prototype.refresh = function() {
+        _fetchItems(this.$container, this.options);
+        _fetchStats(this.$container, this.options);
+    };
+
+    ilx.Filter.prototype.refreshItems = function() {
+        _fetchItems(this.$container, this.options);
+    };
+
+    ilx.Filter.prototype.refreshStats = function() {
+        _fetchStats(this.$container, this.options);
+    };
+
     var _class2selector = function(className) {
         return '.' + className.replace(/\s+/g, '.');
     };
