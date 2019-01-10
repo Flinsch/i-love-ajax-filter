@@ -1,6 +1,6 @@
 {
   "name": "i-love-ajax-filter",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "description": "An extension for the i-love-ajax base module providing filter functionality for tables and lists (as well as sorting, pagination, etc.).",
   "keywords": [
     "filter",
