@@ -167,12 +167,17 @@
             data: data,
             method: method,
             complete: function(jqXHR, textStatus) {
-                var $response = $(jqXHR.responseText);
-                var $items = ilx.filterContent($response);
-                $container.find(options.selectors.items).remove();
-                $container.find(options.selectors.itemsContainer).append($items);
+                var response = ilx.checkResponse(jqXHR);
+                if (response.isHTML) {
+                    var $response = response.$;
+                    var $items = ilx.filterContent($response);
+                    $container.find(options.selectors.items).remove();
+                    $container.find(options.selectors.itemsContainer).append($items);
+                }
 
-                $container.trigger($.Event('ilx-filter.fetch-items.after', {}));
+                $container.trigger($.Event('ilx-filter.fetch-items.after', {
+                    jqXHR: jqXHR
+                }));
             }
         };
         $.ajax(settings);
@@ -193,11 +198,16 @@
             data: data,
             method: method,
             complete: function(jqXHR, textStatus) {
-                var json = JSON.parse(jqXHR.responseText);
-                _updateNumberOfItems($container, options, json[options.json.itemsCount], json[options.json.totalCount]);
-                _updatePagination($container, options, json[options.json.itemsCount]);
+                var response = ilx.checkResponse(jqXHR);
+                if (response.isJSON) {
+                    var json = response.data;
+                    _updateNumberOfItems($container, options, json[options.json.itemsCount], json[options.json.totalCount]);
+                    _updatePagination($container, options, json[options.json.itemsCount]);
+                }
 
-                $container.trigger($.Event('ilx-filter.fetch-stats.after', {}));
+                $container.trigger($.Event('ilx-filter.fetch-stats.after', {
+                    jqXHR: jqXHR
+                }));
             }
         };
         $.ajax(settings);
