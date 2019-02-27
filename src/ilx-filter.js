@@ -9,8 +9,8 @@
 
     var defaultOptions = {
         selectors: {
-            items: 'tbody > tr',
-            itemsContainer: 'tbody',
+            items: '.items > *', // 'tbody > tr',
+            itemsContainer: '.items', // 'tbody',
             pagination: '.ilx-filter-pagination',
             inputTerms: '[name="ilx_filter[terms]"]',
             inputSortFieldNames: '[name="ilx_filter[sort_field_names]"]',
@@ -33,7 +33,11 @@
             buttonPageNext: 'ilx-filter-next'
         },
         html: {
-            itemPlaceholder: ['tr', 'td', 'span'],
+            itemPlaceholder: {
+                'table, tbody': ['tr', 'td', 'span'],
+                'ol, ul': 'li',
+                '*': 'div'
+            },
             colspan: 1000
         },
         json: {
@@ -145,22 +149,7 @@
         var method = $container.attr('data-ilx-filter-fetch-method') || 'post';
         var data = $container.find(options.selectors.inputData).serialize();
 
-        if ($.isArray(options.html.itemPlaceholder) || typeof options.html.itemPlaceholder === 'string') {
-            var tagNames = $.isArray(options.html.itemPlaceholder) ? options.html.itemPlaceholder : [options.html.itemPlaceholder];
-            var $placeholder = $('<'+tagNames[0]+'/>', { 'class': options.classes.item+' '+options.classes.itemPlaceholder });
-            var $spinner = $placeholder;
-            for (var i = 1; i < tagNames.length; ++i) {
-                var $e = $('<'+tagNames[i]+'/>');
-                if (tagNames[i] === 'td' || tagNames[i] === 'th') {
-                    $e.attr('colspan', options.html.colspan);
-                }
-                $spinner.append($e);
-                $spinner = $e;
-            }
-            $spinner.addClass(options.classes.itemPlaceholderSpinner);
-            $container.find(options.selectors.items).remove();
-            $container.find(options.selectors.itemsContainer).append($placeholder);
-        }
+        _setItemPlaceholder($container, options);
 
         var settings = {
             url: url,
@@ -299,6 +288,41 @@
             $select.append($('<option/>', { 'value': p }).text(p));
         }
         $select.val(page);
+    };
+
+    var _setItemPlaceholder = function($container, options, html_itemPlaceholder) {
+        html_itemPlaceholder = typeof html_itemPlaceholder !== 'undefined' ? html_itemPlaceholder : options.html.itemPlaceholder;
+
+        if (typeof html_itemPlaceholder === 'object' && html_itemPlaceholder !== null) {
+            for (var selector in html_itemPlaceholder) {
+                if (html_itemPlaceholder.hasOwnProperty(selector)) {
+                    if ($container.find(options.selectors.itemsContainer).is(selector)) {
+                        return _setItemPlaceholder($container, options, html_itemPlaceholder[selector]);
+                    } // check selector
+                }
+            } // for each selector
+        }
+
+        if (!$.isArray(html_itemPlaceholder) && typeof html_itemPlaceholder !== 'string') {
+            return;
+        }
+
+        var tagNames = $.isArray(html_itemPlaceholder) ? html_itemPlaceholder : [html_itemPlaceholder];
+        var $placeholder = $('<'+tagNames[0]+'/>', { 'class': options.classes.item+' '+options.classes.itemPlaceholder });
+        var $spinner = $placeholder;
+
+        for (var i = 1; i < tagNames.length; ++i) {
+            var $e = $('<'+tagNames[i]+'/>');
+            if (tagNames[i] === 'td' || tagNames[i] === 'th') {
+                $e.attr('colspan', options.html.colspan);
+            }
+            $spinner.append($e);
+            $spinner = $e;
+        }
+
+        $spinner.addClass(options.classes.itemPlaceholderSpinner);
+        $container.find(options.selectors.items).remove();
+        $container.find(options.selectors.itemsContainer).append($placeholder);
     };
 
     return ilx;
