@@ -96,14 +96,6 @@
         _fetchStats(this.$container, this.options);
     };
 
-    var _class2selector = function(className) {
-        return '.' + className.replace(/\s+/g, '.');
-    };
-
-    var _selector2class = function(selector) {
-        return selector.replace(/\./g, ' ').trim();
-    };
-
     var _init = function($container, options) {
         $container.find(options.selectors.inputTerms).off('change').on('change', function() {
             $container.find(options.selectors.inputPage).val(1);
@@ -130,7 +122,7 @@
             $container.find(options.selectors.inputPage).val($(this).val()).change();
         });
 
-        var pageSelectors = _class2selector(options.classes.buttonPage)+'[data-ilx-filter-page]' + ', ' + _class2selector(options.classes.buttonPagePrev)+'[data-ilx-filter-page]' + ', ' + _class2selector(options.classes.buttonPageNext)+'[data-ilx-filter-page]';
+        var pageSelectors = ilx._class2selector(options.classes.buttonPage)+'[data-ilx-filter-page]' + ', ' + ilx._class2selector(options.classes.buttonPagePrev)+'[data-ilx-filter-page]' + ', ' + ilx._class2selector(options.classes.buttonPageNext)+'[data-ilx-filter-page]';
         $container.off('click', pageSelectors).on('click', pageSelectors, function() {
             $container.find(options.selectors.inputPage).val($(this).attr('data-ilx-filter-page')).change();
         });
@@ -247,8 +239,8 @@
         var pageCount = Math.floor((1*itemsCount + itemsPerPage - 1) / itemsPerPage);
 
         var $pagination = $container.find(options.selectors.pagination);
-        $pagination.find(_class2selector(options.classes.buttonPage)+'[data-ilx-filter-page!="1"]').remove();
-        var $page_1 = $pagination.find(_class2selector(options.classes.buttonPage)+'[data-ilx-filter-page="1"]');
+        $pagination.find(ilx._class2selector(options.classes.buttonPage)+'[data-ilx-filter-page!="1"]').remove();
+        var $page_1 = $pagination.find(ilx._class2selector(options.classes.buttonPage)+'[data-ilx-filter-page="1"]');
         $page_1.removeClass(options.classes.buttonPageActive+' '+options.classes.buttonPageDefault).addClass(options.classes[1 === page ? 'buttonPageActive' : 'buttonPageDefault']);
 
         var add_page = function(p) {
@@ -279,8 +271,8 @@
             add_ellipsis();
         }
 
-        $pagination.find(_class2selector(options.classes.buttonPagePrev)).removeClass(options.classes.buttonPageDefault+' '+options.classes.buttonPageDisabled).addClass(options.classes[page > 1 ? 'buttonPageDefault' : 'buttonPageDisabled']).prop('disabled', page <= 1).attr('data-ilx-filter-page', page > 1 ? page - 1 : null);
-        $pagination.find(_class2selector(options.classes.buttonPageNext)).removeClass(options.classes.buttonPageDefault+' '+options.classes.buttonPageDisabled).addClass(options.classes[page < pageCount ? 'buttonPageDefault' : 'buttonPageDisabled']).prop('disabled', page >= pageCount).attr('data-ilx-filter-page', page < pageCount ? page + 1 : null);
+        $pagination.find(ilx._class2selector(options.classes.buttonPagePrev)).removeClass(options.classes.buttonPageDefault+' '+options.classes.buttonPageDisabled).addClass(options.classes[page > 1 ? 'buttonPageDefault' : 'buttonPageDisabled']).prop('disabled', page <= 1).attr('data-ilx-filter-page', page > 1 ? page - 1 : null);
+        $pagination.find(ilx._class2selector(options.classes.buttonPageNext)).removeClass(options.classes.buttonPageDefault+' '+options.classes.buttonPageDisabled).addClass(options.classes[page < pageCount ? 'buttonPageDefault' : 'buttonPageDisabled']).prop('disabled', page >= pageCount).attr('data-ilx-filter-page', page < pageCount ? page + 1 : null);
 
         var $select = $container.find(options.selectors.inputPageSelect);
         $select.find('option').remove();
@@ -323,6 +315,7 @@
         $spinner.addClass(options.classes.itemPlaceholderSpinner);
         $container.find(options.selectors.items).remove();
         $container.find(options.selectors.itemsContainer).append($placeholder);
+        return $placeholder;
     };
 
     return ilx;
