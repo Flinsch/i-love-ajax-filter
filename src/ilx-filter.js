@@ -1,11 +1,11 @@
 
 (function(factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
-        module.exports = factory(require('i-love-ajax'), require('jquery'));
+        module.exports = factory(require('i-love-ajax'), require('jquery'), require('deepmerge'));
     } else {
-        window.ilx = factory(ilx, jQuery);
+        window.ilx = factory(ilx, jQuery, deepmerge);
     }
-})(function(ilx, $) {
+})(function(ilx, $, deepmerge) {
 
     var defaultOptions = {
         selectors: {
@@ -13,6 +13,7 @@
             itemsContainer: '.items', // 'tbody',
             pagination: '.ilx-filter-pagination',
             inputTerms: '[name="ilx_filter[terms]"]',
+            inputFields: '[name^="ilx_filter[fields]["][name$="]"]',
             inputSortFieldNames: '[name="ilx_filter[sort_field_names]"]',
             inputSortOrder: '[name="ilx_filter[sort_order]"]',
             inputItemsPerPage: '[name="ilx_filter[items_per_page]"]',
@@ -58,8 +59,7 @@
         this.$container = $container;
         this.options = {};
 
-        $.extend(true, this.options, defaultOptions);
-
+        this.setOptions(defaultOptions);
         this.setOptions(options);
 
         $container.data('ilx-filter', this);
@@ -67,20 +67,28 @@
         _init(this.$container, this.options);
     };
 
+    ilx.Filter.prototype.getOptions = function() {
+        return this.options;
+    };
+
     ilx.Filter.prototype.setOptions = function(options) {
-        $.extend(true, this.options, options);
+        this.options = deepmerge(this.options, options, { arrayMerge: function(destinationArray, sourceArray, options) { return sourceArray; } });
+    };
+
+    ilx.Filter.prototype.getOption = function(name) {
+        if (name in this.options) {
+            return this.options[name];
+        } else {
+            return null;
+        }
     };
 
     ilx.Filter.prototype.setOption = function(name, value) {
         if (typeof value === 'object' && name in this.options && typeof this.options[name] === 'object') {
-            $.extend(true, this.options[name], value);
+            this.options[name] = deepmerge(this.options[name], value, { arrayMerge: function(destinationArray, sourceArray, options) { return sourceArray; } });
         } else {
             this.options[name] = value;
         }
-    };
-
-    ilx.Filter.prototype.getOption = function(name) {
-        return this.options[name];
     };
 
     ilx.Filter.prototype.refresh = function() {
@@ -97,7 +105,7 @@
     };
 
     var _init = function($container, options) {
-        $container.find(options.selectors.inputTerms).off('change').on('change', function() {
+        $container.find(options.selectors.inputTerms+', '+options.selectors.inputFields).off('change').on('change', function() {
             $container.find(options.selectors.inputPage).val(1);
 
             _fetchItems($container, options);
@@ -108,12 +116,7 @@
             _fetchItems($container, options);
         });
 
-        $container.find(options.selectors.inputItemsPerPage).off('change').on('change', function() {
-            _fetchItems($container, options);
-            _fetchStats($container, options);
-        });
-
-        $container.find(options.selectors.inputPage).off('change').on('change', function() {
+        $container.find(options.selectors.inputItemsPerPage+', '+options.selectors.inputPage).off('change').on('change', function() {
             _fetchItems($container, options);
             _fetchStats($container, options);
         });
