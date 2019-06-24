@@ -146,11 +146,11 @@
 
         _setItemPlaceholder($container, options);
 
-        var settings = {
+        $.ajax({
             url: url,
             data: data,
             method: method,
-            always: function(jqXHR) {
+            complete: function(jqXHR, textStatus) {
                 var response = ilx.checkResponse(jqXHR);
                 if (response.isHTML) {
                     var $response = response.$;
@@ -163,8 +163,7 @@
                     jqXHR: jqXHR
                 }));
             }
-        };
-        $.ajax(settings);
+        });
     };
 
     var _fetchStats = function($container, options) {
@@ -177,11 +176,11 @@
         var method = $container.attr('data-ilx-filter-fetch-method') || 'post';
         var data = $container.find(options.selectors.inputData).serialize();
 
-        var settings = {
+        $.ajax({
             url: url,
             data: data,
             method: method,
-            always: function(jqXHR) {
+            complete: function(jqXHR, textStatus) {
                 var response = ilx.checkResponse(jqXHR);
                 if (response.isJSON) {
                     var json = response.data;
@@ -193,8 +192,7 @@
                     jqXHR: jqXHR
                 }));
             }
-        };
-        $.ajax(settings);
+        });
     };
 
     var _updateNumberOfItems = function($container, options, itemsCount, totalCount) {
