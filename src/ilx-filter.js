@@ -8,6 +8,7 @@
 })(function(ilx, $, deepmerge) {
 
     var defaultOptions = {
+        autoload: true,
         selectors: {
             items: '.items > *', // 'tbody > tr',
             itemsContainer: '.items', // 'tbody',
@@ -130,8 +131,10 @@
             $container.find(options.selectors.inputPage).val($(this).attr('data-ilx-filter-page')).change();
         });
 
-        _fetchItems($container, options);
-        _fetchStats($container, options);
+        if (options.autoload && $container.attr('data-ilx-filter-autoload') !== 'false') {
+            _fetchItems($container, options);
+            _fetchStats($container, options);
+        }
     };
 
     var _fetchItems = function($container, options) {
