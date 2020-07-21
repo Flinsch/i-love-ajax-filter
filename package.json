@@ -1,6 +1,6 @@
 {
   "name": "i-love-ajax-filter",
-  "version": "0.9.12",
+  "version": "0.9.13",
   "description": "An extension for the i-love-ajax base module providing filter functionality for tables and lists (as well as sorting, pagination, etc.).",
   "keywords": [
     "filter",
@@ -31,7 +31,8 @@
   ],
   "main": "dist/ilx-filter.js",
   "dependencies": {
-    "i-love-ajax": "^0.9.6"
+    "i-love-ajax": "^0.9.12",
+    "underscore": "^1.10.2"
   },
   "devDependencies": {
     "grunt": "^1.0.3",

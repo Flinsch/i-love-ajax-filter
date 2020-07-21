@@ -1,14 +1,15 @@
 
 (function(factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
-        module.exports = factory(require('i-love-ajax'), require('jquery'), require('deepmerge'));
+        module.exports = factory(require('i-love-ajax'), require('jquery'), require('underscore'), require('deepmerge'));
     } else {
-        window.ilx = factory(ilx, jQuery, deepmerge);
+        window.ilx = factory(ilx, jQuery, _, deepmerge);
     }
-})(function(ilx, $, deepmerge) {
+})(function(ilx, $, _, deepmerge) {
 
     var defaultOptions = {
         autoload: true,
+        wait: 10,
         selectors: {
             items: '.items > *', // 'tbody > tr',
             itemsContainer: '.items', // 'tbody',
@@ -106,21 +107,21 @@
     };
 
     var _init = function($container, options) {
-        $container.find(options.selectors.inputTerms+', '+options.selectors.inputFields).off('change').on('change', function() {
+        $container.find(options.selectors.inputTerms+', '+options.selectors.inputFields).off('change').on('change', _.debounce(function() {
             $container.find(options.selectors.inputPage).val(1);
 
             _fetchItems($container, options);
             _fetchStats($container, options);
-        });
+        }, options.wait));
 
-        $container.find(options.selectors.inputSortFieldNames+', '+options.selectors.inputSortOrder).off('change').on('change', function() {
+        $container.find(options.selectors.inputSortFieldNames+', '+options.selectors.inputSortOrder).off('change').on('change', _.debounce(function() {
             _fetchItems($container, options);
-        });
+        }, options.wait));
 
-        $container.find(options.selectors.inputItemsPerPage+', '+options.selectors.inputPage).off('change').on('change', function() {
+        $container.find(options.selectors.inputItemsPerPage+', '+options.selectors.inputPage).off('change').on('change', _.debounce(function() {
             _fetchItems($container, options);
             _fetchStats($container, options);
-        });
+        }, options.wait));
 
         $container.find(options.selectors.inputPageSelect).off('change').on('change', function() {
             $container.find(options.selectors.inputPage).val($(this).val()).change();
